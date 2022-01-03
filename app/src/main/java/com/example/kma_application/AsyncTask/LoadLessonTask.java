@@ -1,6 +1,9 @@
 package com.example.kma_application.AsyncTask;
 
+import static android.content.Context.MODE_PRIVATE;
+
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -87,13 +90,16 @@ public class LoadLessonTask extends AsyncTask<Void,Void,String> {
             = MediaType.parse("application/json; charset=utf-8");
 
     String doPostRequest(String url, String json) throws IOException {
-        OkHttpClient client = new OkHttpClient();
+        SharedPreferences pref = context.getSharedPreferences("KMA_App_Pref", MODE_PRIVATE);
+        String token = pref.getString("token", null);
 
         RequestBody body = RequestBody.create(JSON, json);
         Request request = new Request.Builder()
                 .url(url)
+                .addHeader("x-access-token", token)
                 .post(body)
                 .build();
+        OkHttpClient client = new OkHttpClient();
         Response response = client.newCall(request).execute();
         return response.body().string();
     }

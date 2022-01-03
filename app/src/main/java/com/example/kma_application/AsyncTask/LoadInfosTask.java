@@ -1,6 +1,9 @@
 package com.example.kma_application.AsyncTask;
 
+import static android.content.Context.MODE_PRIVATE;
+
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -50,7 +53,8 @@ public class LoadInfosTask extends AsyncTask<Void,Void,String> {
         this.mainActivity = mainActivity;
     }
 
-    public LoadInfosTask(String phone, String role, AsyncResponse mainActivity, AsyncResponse homeFrag, AsyncResponse newfeedFragment, AsyncResponse notifiFrag, AsyncResponse userFrag) {
+    public LoadInfosTask(Context context, String phone, String role, AsyncResponse mainActivity, AsyncResponse homeFrag, AsyncResponse newfeedFragment, AsyncResponse notifiFrag, AsyncResponse userFrag) {
+        this.context = context;
         this.phone = phone;
         this.role = role;
         this.mainActivity = mainActivity;
@@ -59,7 +63,6 @@ public class LoadInfosTask extends AsyncTask<Void,Void,String> {
         this.notifiFrag = notifiFrag;
         this.userFrag = userFrag;
     }
-
 
     OkHttpClient client = new OkHttpClient();
 
@@ -130,11 +133,16 @@ public class LoadInfosTask extends AsyncTask<Void,Void,String> {
     }
 
     String doPostRequest(String url, String json) throws IOException {
+        SharedPreferences pref = context.getSharedPreferences("KMA_App_Pref", MODE_PRIVATE);
+        String token = pref.getString("token", null);
+
         RequestBody body = RequestBody.create(JSON, json);
         Request request = new Request.Builder()
                 .url(url)
+                .addHeader("x-access-token", token)
                 .post(body)
                 .build();
+        OkHttpClient client = new OkHttpClient();
         Response response = client.newCall(request).execute();
         return response.body().string();
     }

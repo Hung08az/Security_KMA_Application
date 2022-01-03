@@ -2,18 +2,26 @@ package com.example.kma_application.Models;
 
 public class ResponseModel {
     private String response;
-    private String role;
     private Boolean res;
+    private String role;
+    private String token;
+
+    public ResponseModel(String response, Boolean res, String role, String token) {
+        this.response = response;
+        this.res = res;
+        this.role = role;
+        this.token = token;
+    }
 
     public ResponseModel(String response, Boolean res) {
         this.response = response;
         this.res = res;
     }
 
-    public ResponseModel(String response, String role, Boolean res) {
+    public ResponseModel(String response, Boolean res, String role) {
         this.response = response;
-        this.role = role;
         this.res = res;
+        this.role = role;
     }
 
     public String getResponse() {
@@ -38,5 +46,13 @@ public class ResponseModel {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 }

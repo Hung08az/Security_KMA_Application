@@ -2,6 +2,7 @@ package com.example.kma_application.Activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -23,7 +24,8 @@ public class LoginActivity extends AppCompatActivity {
 
     EditText txtPhone,txtPassword;
     Button btLogin;
-
+    SharedPreferences pref;
+    SharedPreferences.Editor editor;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,6 +36,9 @@ public class LoginActivity extends AppCompatActivity {
         txtPhone = (EditText)findViewById(R.id.editTextPhone);
         txtPassword = (EditText)findViewById(R.id.editTextTextPassword);
         btLogin = (Button)findViewById(R.id.buttonLogin);
+
+        pref = getApplicationContext().getSharedPreferences("KMA_App_Pref", MODE_PRIVATE);
+        editor = pref.edit();
         
         //Event handle
         btLogin.setOnClickListener(new View.OnClickListener() {
@@ -44,17 +49,20 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        String storedPhone = pref.getString("phone", "");
+        if (!TextUtils.isEmpty(storedPhone))
+            txtPhone.setText(storedPhone);
+    }
 
     private void onClickBtLogin() {
         loginUser(txtPhone.getText().toString().trim(),
                 txtPassword.getText().toString().trim());
     }
 
-    // test data
-    String userJson(String phone, String password) {
-        return "{\"phone\":\"" + phone + "\","
-                +"\"password\":\"" + password +"\"}";
-    }
+
     private void loginUser(String phone, String password) {
         if (TextUtils.isEmpty(phone)){
 
@@ -66,7 +74,12 @@ public class LoginActivity extends AppCompatActivity {
             Toast.makeText(this,"Mật khẩu không được để trống",Toast.LENGTH_LONG).show();
             return;
         }
-        LoginTask loginTask = new LoginTask(this, phone);
-        loginTask.execute(userJson(phone,password));
+        new LoginTask(
+                this,
+                phone,
+                password,
+                pref,
+                editor
+        ).execute();
     }
 }

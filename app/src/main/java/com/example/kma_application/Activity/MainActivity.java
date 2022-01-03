@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity implements LoadInfosTask.Asy
         userFragment = new UserFragment();
         newfeedFragment = new NewfeedFragment();
 
-        LoadInfosTask loadInfosTask = new LoadInfosTask(phone, role, this,homeFragment,newfeedFragment,notificationFragment,userFragment);
+        LoadInfosTask loadInfosTask = new LoadInfosTask(this, phone, role, this,homeFragment,newfeedFragment,notificationFragment,userFragment);
         homeFragment.setLoadInfosTask(loadInfosTask);
         newfeedFragment.setLoadInfosTask(loadInfosTask);
         loadInfosTask.execute();
