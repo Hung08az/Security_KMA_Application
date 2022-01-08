@@ -41,7 +41,8 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 
-
+    //Biometric
+    implementation 'androidx.biometric:biometric:1.0.1'
 
     //Retrofit
     implementation 'com.squareup.retrofit2:adapter-rxjava2:2.3.0'

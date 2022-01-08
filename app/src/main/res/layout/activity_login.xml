@@ -78,6 +78,17 @@
             android:textSize="18sp"
             app:cornerRadius="8dp" />
 
+        <ImageView
+            android:id="@+id/bt_fingerprint"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_below="@+id/editTextTextPassword"
+            android:layout_alignParentEnd="true"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="35dp"
+            android:layout_marginEnd="41dp"
+            android:src="@drawable/ic_baseline_fingerprint_24"></ImageView>
+
         <ProgressBar
             android:id="@+id/progressBar"
             style="?android:attr/progressBarStyle"
