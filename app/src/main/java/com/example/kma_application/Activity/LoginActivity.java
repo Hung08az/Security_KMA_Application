@@ -5,10 +5,17 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.biometric.BiometricManager;
 import androidx.biometric.BiometricPrompt;
 import androidx.core.content.ContextCompat;
+import androidx.security.crypto.EncryptedSharedPreferences;
+import androidx.security.crypto.MasterKeys;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
+import android.security.KeyPairGeneratorSpec;
+import android.security.keystore.KeyGenParameterSpec;
+import android.security.keystore.KeyProperties;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -19,6 +26,14 @@ import android.widget.Toast;
 import com.example.kma_application.AsyncTask.LoginTask;
 import com.example.kma_application.R;
 
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.spec.ECGenParameterSpec;
 import java.util.concurrent.Executor;
 
 public class LoginActivity extends AppCompatActivity {
@@ -40,9 +55,24 @@ public class LoginActivity extends AppCompatActivity {
         btLogin = (Button)findViewById(R.id.buttonLogin);
         bt_fingerprint = findViewById(R.id.bt_fingerprint);
 
-        pref = getApplicationContext().getSharedPreferences("KMA_App_Pref", MODE_PRIVATE);
+//        pref = getApplicationContext().getSharedPreferences("KMA_App_Pref", MODE_PRIVATE);
+
+        try {
+            String masterKeyAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC);
+            pref = EncryptedSharedPreferences.create(
+                    "Secret_KMA_App_Pref",
+                    masterKeyAlias,
+                    getApplicationContext(),
+                    EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+                    EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+            );
+        } catch (GeneralSecurityException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         editor = pref.edit();
-        
+
         //Event handle
         btLogin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -101,7 +131,7 @@ public class LoginActivity extends AppCompatActivity {
         });
         final BiometricPrompt.PromptInfo promptInfo = new BiometricPrompt.PromptInfo.Builder()
                 .setTitle("Đăng nhập")
-                .setDescription("Dùng vân tay của bạn để đăng nhập")
+                .setDescription("Chạm vào cảm biến vân tay để đăng nhập")
                 .setNegativeButtonText("Hủy bỏ")
                 .build();
 
@@ -154,4 +184,5 @@ public class LoginActivity extends AppCompatActivity {
                 editor
         ).execute();
     }
+
 }

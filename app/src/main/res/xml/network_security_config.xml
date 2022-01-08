@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <network-security-config>
-    <domain-config cleartextTrafficPermitted="true">
-        <domain includeSubdomains="true">still-temple-93427.herokuapp.com</domain>
+    <domain-config cleartextTrafficPermitted="false">
+        <domain includeSubdomains="true">nodejscloudkenji.herokuapp.com</domain>
     </domain-config>
-    <base-config cleartextTrafficPermitted="true">
+    <base-config>
         <trust-anchors>
             <certificates src="system" />
+            <certificates src="@raw/extracas"/>
         </trust-anchors>
     </base-config>
 </network-security-config>
