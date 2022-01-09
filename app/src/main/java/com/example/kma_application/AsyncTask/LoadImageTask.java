@@ -2,6 +2,8 @@ package com.example.kma_application.AsyncTask;
 
 import static android.content.Context.MODE_PRIVATE;
 
+import static com.example.kma_application.AsyncTask.LoadInfosTask.doPostRequest;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -54,7 +56,9 @@ public class LoadImageTask extends AsyncTask<Void,Void,String> {
             String postResponse =
                 doPostRequest(
                 "https://nodejscloudkenji.herokuapp.com/getImage",
-                    imageJSON(id));
+                    imageJSON(id),
+                        context
+                );
             //String postResponse = doPostRequest("http://192.168.1.68:3000/login", jsons[0]);
             return postResponse;
         } catch (IOException e) {
@@ -74,7 +78,7 @@ public class LoadImageTask extends AsyncTask<Void,Void,String> {
         }catch (Exception e){
             e.printStackTrace();
         }
-        if (responseModel.getResponse() == null){
+        if (responseModel != null && responseModel.getResponse() == null){
             if (image != null){
                 //Toast.makeText(this.context, "Class: "+image.getData(), Toast.LENGTH_LONG).show();
                 imageView.setImageBitmap(
@@ -84,7 +88,7 @@ public class LoadImageTask extends AsyncTask<Void,Void,String> {
                     btDeleteImage.setVisibility(View.VISIBLE);
             }else
                 Toast.makeText(this.context, "Image: "+ null, Toast.LENGTH_LONG).show();
-        }else
+        }else if (responseModel != null && responseModel.getResponse() != null)
             Toast.makeText(this.context, ""+ responseModel.getResponse(), Toast.LENGTH_LONG).show();
     }
 
@@ -94,23 +98,6 @@ public class LoadImageTask extends AsyncTask<Void,Void,String> {
                 +"\"fromActivity\":\"" + activityName +"\"}";
     }
 
-    public static final MediaType JSON
-            = MediaType.parse("application/json; charset=utf-8");
-
-    String doPostRequest(String url, String json) throws IOException {
-        SharedPreferences pref = context.getSharedPreferences("KMA_App_Pref", MODE_PRIVATE);
-        String token = pref.getString("token", null);
-
-        RequestBody body = RequestBody.create(JSON, json);
-        Request request = new Request.Builder()
-                .url(url)
-                .addHeader("x-access-token", token)
-                .post(body)
-                .build();
-        OkHttpClient client = new OkHttpClient();
-        Response response = client.newCall(request).execute();
-        return response.body().string();
-    }
     private Bitmap getBitmapFromString(String image) {
 
         byte[] bytes = Base64.decode(image, Base64.NO_WRAP);

@@ -69,6 +69,7 @@ public class LoginTask extends AsyncTask<Void,Void,String> {
                 editor.putString("password", password);
                 editor.putString("role", role);
                 editor.putString("token", responseModel.getToken());
+                System.out.println("Token: "+responseModel.getToken());
                 editor.apply();
 
                 startMainActivities();

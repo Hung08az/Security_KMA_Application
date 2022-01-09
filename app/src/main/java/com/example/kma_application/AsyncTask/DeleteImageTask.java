@@ -40,14 +40,16 @@ public class DeleteImageTask extends AsyncTask<Void,Void,String> {
         try {
             String postResponse;
             if(fromActivity == null)
-                postResponse = doPostRequest(
+                postResponse = LoadInfosTask.doPostRequest(
                     "https://nodejscloudkenji.herokuapp.com/deleteImage",
-                    requestJson()
+                    requestJson(),
+                    context
                 );
             else
-                postResponse = doPostRequest(
+                postResponse = LoadInfosTask.doPostRequest(
                         "https://nodejscloudkenji.herokuapp.com/deleteNotify",
-                        requestJson()
+                        requestJson(),
+                        context
                 );
             //String postResponse = doPostRequest("http://192.168.1.68:3000/login", jsons[0]);
             return postResponse;
@@ -87,26 +89,9 @@ public class DeleteImageTask extends AsyncTask<Void,Void,String> {
 
     }
 
-    // post request code here
     String requestJson() {
         return "{\"id\":\"" + imageId + "\"}";
     }
-    public static final MediaType JSON
-            = MediaType.parse("application/json; charset=utf-8");
 
-    String doPostRequest(String url, String json) throws IOException {
-        SharedPreferences pref = context.getSharedPreferences("KMA_App_Pref", MODE_PRIVATE);
-        String token = pref.getString("token", null);
-
-        RequestBody body = RequestBody.create(JSON, json);
-        Request request = new Request.Builder()
-                .url(url)
-                .addHeader("x-access-token", token)
-                .post(body)
-                .build();
-        OkHttpClient client = new OkHttpClient();
-        Response response = client.newCall(request).execute();
-        return response.body().string();
-    }
 }
 

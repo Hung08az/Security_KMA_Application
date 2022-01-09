@@ -2,6 +2,8 @@ package com.example.kma_application.AsyncTask;
 
 import static android.content.Context.MODE_PRIVATE;
 
+import static com.example.kma_application.AsyncTask.LoadInfosTask.doPostRequest;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -31,7 +33,11 @@ public class SubmitAbsentTask extends AsyncTask<String,Void,String> {
     @Override
     protected String doInBackground(String... jsons) {
         try {
-            String postResponse = doPostRequest("https://nodejscloudkenji.herokuapp.com/submitAbsent", jsons[0]);
+            String postResponse = doPostRequest(
+                    "https://nodejscloudkenji.herokuapp.com/submitAbsent",
+                    jsons[0],
+                    context
+            );
             //String postResponse = doPostRequest("http://192.168.1.68:3000/login", jsons[0]);
             return postResponse;
         } catch (IOException e) {
@@ -55,25 +61,5 @@ public class SubmitAbsentTask extends AsyncTask<String,Void,String> {
         if (responseModel != null){
             Toast.makeText(this.context, responseModel.getResponse(), Toast.LENGTH_LONG).show();
         }
-    }
-
-    // post request code here
-
-    public static final MediaType JSON
-            = MediaType.parse("application/json; charset=utf-8");
-
-    String doPostRequest(String url, String json) throws IOException {
-        SharedPreferences pref = context.getSharedPreferences("KMA_App_Pref", MODE_PRIVATE);
-        String token = pref.getString("token", null);
-
-        RequestBody body = RequestBody.create(JSON, json);
-        Request request = new Request.Builder()
-                .url(url)
-                .addHeader("x-access-token", token)
-                .post(body)
-                .build();
-        OkHttpClient client = new OkHttpClient();
-        Response response = client.newCall(request).execute();
-        return response.body().string();
     }
 }

@@ -47,7 +47,11 @@ public class ContactActivity extends AppCompatActivity {
     private  final  String CLIENT_SEND_CHAT = "CLIENT_SEND_CHAT";
     private  final  String SERVER_SEND_CHAT = "SERVER_SEND_CHAT";
 
-    Socket mSocket;
+    public static Socket getSocket() {
+        return mSocket;
+    }
+
+    public static Socket mSocket;
     {
         try {
             mSocket = IO.socket("https://nodejscloudkenji.herokuapp.com");
@@ -67,6 +71,7 @@ public class ContactActivity extends AppCompatActivity {
         mSocket.connect();
         mSocket.on(SERVER_SEND_CHAT,onRetrieveData);
         mSocket.on("ping",onRetrieveHeartBeat);
+        mSocket.on("server_req_cp_phone",onServerReqCpPhone);
 
         messageAdapter = new MessageAdapter(phone, getLayoutInflater());
         recyclerView.setAdapter(messageAdapter);
@@ -107,6 +112,12 @@ public class ContactActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+
+    }
+
+    @Override
     protected void onStop() {
         super.onStop();
         //mSocket.disconnect();
@@ -115,9 +126,14 @@ public class ContactActivity extends AppCompatActivity {
     @Override
     protected void onRestart() {
         super.onRestart();
-        if (!mSocket.connected())   mSocket.connect();
+//        if (!mSocket.connected())   mSocket.connect();
     }
-
+    private Emitter.Listener onServerReqCpPhone = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            mSocket.emit("coupleUserPhone",coupleUserPhone);
+        }
+    };
     private Emitter.Listener onRetrieveHeartBeat = new Emitter.Listener() {
         @Override
         public void call(Object... args) {

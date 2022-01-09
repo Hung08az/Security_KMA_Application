@@ -37,6 +37,7 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 
 import static android.app.Activity.RESULT_OK;
+import static com.example.kma_application.Activity.ContactActivity.getSocket;
 
 
 public class UserFragment extends Fragment implements LoadInfosTask.AsyncResponse, SubmitImageTask.AsyncResponse {
@@ -145,6 +146,8 @@ public class UserFragment extends Fragment implements LoadInfosTask.AsyncRespons
 
     private void onClickBtLogout() {
         Intent loginActivity = new Intent(getActivity(), LoginActivity.class);
+        getSocket().close();
+        getSocket().disconnect();
         startActivity(loginActivity);
         getActivity().finish();
     }

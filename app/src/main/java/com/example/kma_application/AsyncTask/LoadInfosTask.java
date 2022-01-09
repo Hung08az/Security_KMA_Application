@@ -8,7 +8,11 @@ import android.os.AsyncTask;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.security.crypto.EncryptedSharedPreferences;
+import androidx.security.crypto.MasterKeys;
+
 import java.io.IOException;
+import java.security.GeneralSecurityException;
 
 import com.example.kma_application.Models.Admin;
 import com.example.kma_application.Models.Person;
@@ -70,7 +74,7 @@ public class LoadInfosTask extends AsyncTask<Void,Void,String> {
     protected String doInBackground(Void... voids) {
         try {
             //Log.e("MY_TAG",this.infoModel.getName());
-            String postResponse = doPostRequest("https://nodejscloudkenji.herokuapp.com/getInfo", userJson(phone,role));
+            String postResponse = doPostRequest("https://nodejscloudkenji.herokuapp.com/getInfo", userJson(phone,role), context);
             //String postResponse = doPostRequest("http://192.168.1.68:3000/getInfo", jsons[0]);
 
             return postResponse;
@@ -132,9 +136,23 @@ public class LoadInfosTask extends AsyncTask<Void,Void,String> {
                 +"\"role\":\"" + role +"\"}";
     }
 
-    String doPostRequest(String url, String json) throws IOException {
-        SharedPreferences pref = context.getSharedPreferences("KMA_App_Pref", MODE_PRIVATE);
-        String token = pref.getString("token", null);
+    public static String doPostRequest(String url, String json, Context context) throws IOException {
+        String token = "null";
+        try {
+            String masterKeyAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC);
+            SharedPreferences pref = EncryptedSharedPreferences.create(
+                    "Secret_KMA_App_Pref",
+                    masterKeyAlias,
+                    context,
+                    EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+                    EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+            );
+            token = pref.getString("token", "null");
+        } catch (GeneralSecurityException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         RequestBody body = RequestBody.create(JSON, json);
         Request request = new Request.Builder()
