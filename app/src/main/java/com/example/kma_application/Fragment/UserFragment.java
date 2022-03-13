@@ -146,8 +146,12 @@ public class UserFragment extends Fragment implements LoadInfosTask.AsyncRespons
 
     private void onClickBtLogout() {
         Intent loginActivity = new Intent(getActivity(), LoginActivity.class);
-        getSocket().close();
-        getSocket().disconnect();
+        try {
+            getSocket().close();
+            getSocket().disconnect();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         startActivity(loginActivity);
         getActivity().finish();
     }
