@@ -102,7 +102,6 @@ public class MainActivity extends AppCompatActivity implements LoadInfosTask.Asy
         Intent intent = new Intent(this, ContactActivity.class);
         if (role.equals("teacher"))
             intent = new Intent(this, TeacherMessengerActivity.class);
-
         intent.putExtra("class", _class);
         intent.putExtra("role", role);
         intent.putExtra("info", person);

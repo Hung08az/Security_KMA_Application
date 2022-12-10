@@ -46,7 +46,7 @@ public class LoadNotifiTask extends AsyncTask<Void,Void,String> {
     protected String doInBackground(Void... voids) {
         try {
             String postResponse = doPostRequest(
-                    "https://nodejscloudkenji.herokuapp.com/getNotify",
+                    "https://nodejscloudkenji.herokuapp.com/getAllNotify",
                     classJson(""),
                     context
             );

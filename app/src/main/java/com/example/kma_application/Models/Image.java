@@ -5,7 +5,7 @@ import java.io.Serializable;
 public class Image implements Serializable {
     private String _id;
     private String id;
-    private String _class;
+    private String className;
     private String data;
     private String size;
     private String __v;
@@ -13,7 +13,7 @@ public class Image implements Serializable {
     public Image(String _id, String id, String _class, String data, String size, String __v) {
         this._id = _id;
         this.id = id;
-        this._class = _class;
+        this.className = className;
         this.data = data;
         this.size = size;
         this.__v = __v;
@@ -36,11 +36,11 @@ public class Image implements Serializable {
     }
 
     public String get_class() {
-        return _class;
+        return className;
     }
 
     public void set_class(String _class) {
-        this._class = _class;
+        this.className = _class;
     }
 
     public String getData() {
